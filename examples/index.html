@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>netviz Examples</title>
+<style>
+  body {
+    margin: 40px;
+    font-family: sans-serif;
+    max-width: 800px;
+  }
+  h1 {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+  ul {
+    line-height: 2;
+  }
+  a {
+    font-size: 18px;
+  }
+  .note {
+    background: #f5f5f5;
+    padding: 15px;
+    margin: 20px 0;
+    border-left: 3px solid #333;
+  }
+</style>
+<body>
+
+<h1>netviz Examples</h1>
+
+<p>
+  Force-directed graph visualization supporting SVG and Canvas rendering,
+  with edge bundling, grouping layouts, and reactive widgets integration.
+</p>
+
+<div class="note">
+  <strong>Note:</strong> Run these examples from a web server:
+  <code>npm run serve</code> from the project root.
+</div>
+
+<ul>
+  <li><a href="basic.html">Basic Example</a> — Simple force-directed graph</li>
+  <li><a href="advanced.html">Advanced Features</a> — Edge bundling, Force-in-a-Box, Smart labels</li>
+  <li><a href="observable-compat.html">Observable Compatibility</a> — Invalidation, state preservation, updates</li>
+</ul>
+
+<h2>API Reference</h2>
+
+<pre>
+const graph = forceGraph(data, {
+  width: 960,
+  height: 600,
+  renderer: "canvas",     // or "svg"
+  nodeId: d => d.id,
+  nodeGroup: d => d.group,
+  nodeRadius: 5,
+  useEdgeBundling: false,
+  useForceInABox: false,
+  useSmartLabels: true,
+});
+
+document.body.appendChild(graph);
+</pre>
+
+<p>
+  <a href="https://github.com/john-guerra/node-link">Documentation</a> ·
+  <a href="https://www.npmjs.com/package/netviz">npm</a> ·
+  <a href="https://observablehq.com/@john-guerra/force-directed-graph">Observable</a>
+</p>
+
+</body>

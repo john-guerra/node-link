@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Observable Compatibility</title>
+<style>
+  body {
+    margin: 20px;
+    font-family: sans-serif;
+  }
+  .demo {
+    margin: 30px 0;
+    padding: 20px;
+    border: 1px solid #ddd;
+  }
+  pre {
+    background: #f5f5f5;
+    padding: 10px;
+    overflow: auto;
+  }
+  button {
+    margin: 5px;
+  }
+</style>
+<body>
+
+<h1>Observable Compatibility Patterns</h1>
+
+<!-- Demo 1: Invalidation -->
+<div class="demo">
+  <h2>1. Invalidation Promise</h2>
+  <pre>const graph = forceGraph(data, { invalidation });</pre>
+  <button id="create-inv">Create</button>
+  <button id="trigger-inv">Trigger Invalidation</button>
+  <div id="graph-inv"></div>
+</div>
+
+<!-- Demo 2: State Preservation -->
+<div class="demo">
+  <h2>2. State Preservation (_this)</h2>
+  <pre>const graph = forceGraph(data, { _this: previousGraph });</pre>
+  <button id="create-this">Create</button>
+  <button id="update-this">Update (preserves positions)</button>
+  <div id="graph-this"></div>
+</div>
+
+<!-- Demo 3: Update Method -->
+<div class="demo">
+  <h2>3. Update Method</h2>
+  <pre>graph.update(newData, newOptions);</pre>
+  <button id="create-update">Create</button>
+  <button id="filter-50">Show 50% Links</button>
+  <button id="filter-100">Show 100% Links</button>
+  <div id="graph-update"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="../dist/netviz.umd.js"></script>
+<script>
+  let data;
+
+  fetch("data/miserables.json")
+    .then((r) => r.json())
+    .then((d) => {
+      data = d;
+      setupDemos();
+    });
+
+  function setupDemos() {
+    // Demo 1: Invalidation
+    let graph1, controller;
+    document.getElementById("create-inv").onclick = () => {
+      controller = new AbortController();
+      const invalidation = new Promise((resolve) => {
+        controller.signal.addEventListener("abort", resolve);
+      });
+
+      graph1 = netviz.forceGraph(data, {
+        width: 920,
+        height: 300,
+        invalidation,
+      });
+
+      document.getElementById("graph-inv").innerHTML = "";
+      document.getElementById("graph-inv").appendChild(graph1);
+    };
+
+    document.getElementById("trigger-inv").onclick = () => {
+      if (controller) controller.abort();
+    };
+
+    // Demo 2: State Preservation
+    let graph2;
+    document.getElementById("create-this").onclick = () => {
+      graph2 = netviz.forceGraph(data, {
+        width: 920,
+        height: 300,
+        nodeRadius: 5,
+      });
+
+      document.getElementById("graph-this").innerHTML = "";
+      document.getElementById("graph-this").appendChild(graph2);
+    };
+
+    document.getElementById("update-this").onclick = () => {
+      if (!graph2) return;
+
+      // Update with _this to preserve positions
+      const newGraph = netviz.forceGraph(data, {
+        width: 920,
+        height: 300,
+        nodeRadius: 7, // Changed parameter
+        _this: graph2, // Preserve state
+      });
+
+      document.getElementById("graph-this").innerHTML = "";
+      document.getElementById("graph-this").appendChild(newGraph);
+      graph2 = newGraph;
+    };
+
+    // Demo 3: Update Method
+    let graph3;
+    document.getElementById("create-update").onclick = () => {
+      graph3 = netviz.forceGraph(data, {
+        width: 920,
+        height: 300,
+      });
+
+      document.getElementById("graph-update").innerHTML = "";
+      document.getElementById("graph-update").appendChild(graph3);
+    };
+
+    document.getElementById("filter-50").onclick = () => {
+      if (!graph3) return;
+      graph3.update({
+        nodes: data.nodes,
+        links: data.links.slice(0, Math.floor(data.links.length * 0.5)),
+      });
+    };
+
+    document.getElementById("filter-100").onclick = () => {
+      if (!graph3) return;
+      graph3.update(data);
+    };
+  }
+</script>

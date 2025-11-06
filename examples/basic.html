@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Basic Example</title>
+<style>
+  body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+</style>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="../dist/netviz.umd.js"></script>
+<script>
+  // Fetch data and create graph
+  fetch("data/miserables.json")
+    .then((r) => r.json())
+    .then((data) => {
+      // Create force-directed graph
+      const graph = netviz.forceGraph(data, {
+        width: 960,
+        height: 600,
+        renderer: "canvas", // or "svg"
+        nodeId: (d) => d.id,
+        nodeGroup: (d) => d.group,
+        nodeLabel: (d) => d.id,
+        nodeRadius: 5,
+        linkStrokeWidth: (l) => Math.sqrt(l.value),
+      });
+
+      document.body.appendChild(graph);
+    });
+</script>

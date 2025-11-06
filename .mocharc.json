@@ -1,0 +1,6 @@
+{
+  "require": ["test/helpers/jsdom.js"],
+  "spec": "test/**/*-test.js",
+  "node-option": ["loader=./test/helpers/loader.js"],
+  "timeout": 5000
+}

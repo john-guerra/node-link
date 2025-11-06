@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Advanced Features</title>
+<style>
+  body {
+    margin: 20px;
+    font-family: sans-serif;
+  }
+  label {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  #controls {
+    margin-bottom: 10px;
+  }
+</style>
+<body>
+
+<div id="controls">
+  <label><input type="checkbox" id="edge-bundling"> Edge Bundling</label>
+  <label><input type="checkbox" id="force-in-a-box"> Force-in-a-Box</label>
+  <label><input type="checkbox" id="smart-labels" checked> Smart Labels</label>
+  <button id="apply">Apply</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="../dist/netviz.umd.js"></script>
+<script>
+  let graph;
+
+  fetch("data/miserables.json")
+    .then((r) => r.json())
+    .then((data) => {
+      window.data = data;
+      createGraph();
+
+      document.getElementById("apply").onclick = createGraph;
+    });
+
+  function createGraph() {
+    const container = document.getElementById("graph");
+    if (container) container.remove();
+    if (graph) graph.destroy();
+
+    // Read current options from UI
+    const useEdgeBundling = document.getElementById("edge-bundling").checked;
+    const useForceInABox = document.getElementById("force-in-a-box").checked;
+    const useSmartLabels = document.getElementById("smart-labels").checked;
+
+    // Create graph with selected features
+    graph = netviz.forceGraph(window.data, {
+      width: 960,
+      height: 600,
+      renderer: "svg",
+      nodeId: (d) => d.id,
+      nodeGroup: (d) => d.group,
+      nodeLabel: (d) => d.id,
+      nodeRadius: 6,
+      linkStrokeWidth: (l) => Math.sqrt(l.value),
+
+      // Advanced features
+      useEdgeBundling,
+      useForceInABox,
+      useSmartLabels,
+
+      edgeBundling: {
+        compatibility_threshold: 0.3,
+        bundling_stiffness: 0.1,
+      },
+
+      forceInABox: {
+        template: "treemap",
+        strength: 0.1,
+      },
+    });
+
+    graph.id = "graph";
+    document.body.appendChild(graph);
+  }
+</script>
