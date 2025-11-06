@@ -65,7 +65,8 @@ Interactive examples are available in the `examples/` directory, using Les Misé
 
 - **basic.html** - Simple force-directed graph with SVG/Canvas rendering
 - **advanced.html** - Edge bundling, grouping, and advanced features
-- **observable-compat.html** - Observable-specific patterns
+- **observable-desktop.html** - Observable Desktop / Notebook Kit format
+- **observable-framework.md** - Observable Framework format
 
 To run the examples locally:
 

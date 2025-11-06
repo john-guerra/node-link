@@ -1,0 +1,110 @@
+<!doctype html>
+<notebook theme="air">
+  <title>netviz in Observable Desktop</title>
+  <script id="1" type="text/markdown">
+    # netviz in Observable Desktop
+
+    This notebook demonstrates using the **netviz** library in Observable Desktop to create an interactive force-directed graph visualization.
+
+    netviz is a network visualization library providing multiple layout algorithms and rendering modes.
+  </script>
+  <script id="2" type="module">
+    // Import netviz and D3
+    import {ForceGraph, NodeLink} from "npm:netviz";
+    import * as d3 from "npm:d3";
+  </script>
+  <script id="3" type="text/markdown">
+    ## Load Data
+
+    We'll use the Les Misérables character co-occurrence dataset.
+  </script>
+  <script id="4" type="module">
+    const data = await d3.json("https://raw.githubusercontent.com/john-guerra/node-link/main/examples/data/miserables.json");
+  </script>
+  <script id="5" type="text/markdown">
+    ## Basic Force-Directed Graph
+
+    Create a simple force-directed graph using Canvas rendering:
+  </script>
+  <script id="6" type="module" pinned="">
+    ForceGraph(data, {
+      width: 928,
+      height: 600,
+      renderer: "canvas",
+      nodeId: d => d.id,
+      nodeGroup: d => d.group,
+      nodeLabel: d => d.id,
+      nodeRadius: 5,
+      linkStrokeWidth: l => Math.sqrt(l.value)
+    })
+  </script>
+  <script id="7" type="text/markdown">
+    ## SVG Rendering with Smart Labels
+
+    Switch to SVG rendering and enable smart labels for better readability:
+  </script>
+  <script id="8" type="module" pinned="">
+    ForceGraph(data, {
+      width: 928,
+      height: 600,
+      renderer: "svg",
+      nodeId: d => d.id,
+      nodeGroup: d => d.group,
+      nodeLabel: d => d.id,
+      nodeRadius: 6,
+      linkStrokeWidth: l => Math.sqrt(l.value),
+      useSmartLabels: true
+    })
+  </script>
+  <script id="9" type="text/markdown">
+    ## Advanced Features
+
+    Enable edge bundling and Force-in-a-Box for grouped layouts:
+  </script>
+  <script id="10" type="module" pinned="">
+    ForceGraph(data, {
+      width: 928,
+      height: 600,
+      renderer: "svg",
+      nodeId: d => d.id,
+      nodeGroup: d => d.group,
+      nodeLabel: d => d.id,
+      nodeRadius: 6,
+      linkStrokeWidth: l => Math.sqrt(l.value),
+      useEdgeBundling: true,
+      useForceInABox: true,
+      useSmartLabels: true,
+      edgeBundling: {
+    compatibility_threshold: 0.3,
+    bundling_stiffness: 0.1
+      },
+      forceInABox: {
+    template: "treemap",
+    strength: 0.1
+      }
+    })
+  </script>
+  <script id="11" type="text/markdown">
+    ## Alternative: NodeLink Alias
+
+    You can also use the `NodeLink` alias for semantic clarity:
+  </script>
+  <script id="12" type="module" pinned="">
+    NodeLink(data, {
+      width: 928,
+      height: 600,
+      renderer: "canvas",
+      nodeId: d => d.id,
+      nodeGroup: d => d.group,
+      nodeRadius: 5
+    })
+  </script>
+  <script id="13" type="text/markdown">
+    ---
+
+    **Learn more:**
+    - [netviz on npm](https://www.npmjs.com/package/netviz)
+    - [GitHub Repository](https://github.com/john-guerra/node-link)
+    - [Observable Notebook](https://observablehq.com/@john-guerra/force-directed-graph)
+  </script>
+</notebook>
