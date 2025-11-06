@@ -12,6 +12,8 @@ Based on the [Observable notebook](https://observablehq.com/@john-guerra/force-d
 npm install netviz d3
 ```
 
+**TypeScript:** Type definitions are included. No additional @types packages needed.
+
 ## Quick Start
 
 ```javascript
@@ -94,6 +96,17 @@ Creates a force-directed graph visualization. `NodeLink` is an alias for semanti
 - `data` - Object with `{nodes, links}`
   - `nodes`: Array of node objects with at least an `id` property
   - `links`: Array of link objects with `source` and `target` properties
+    - Links support multiple formats:
+      ```javascript
+      // String/number IDs (most common)
+      { source: "nodeA", target: "nodeB" }
+
+      // Node object references
+      { source: nodeObjA, target: nodeObjB }
+
+      // Numeric indices (e.g., vega-datasets format)
+      { source: 0, target: 1 }  // References nodes[0] and nodes[1]
+      ```
 - `options` - Configuration object (see Options below)
 
 **Returns:** HTML Element (SVG or Canvas) with additional properties:
@@ -159,6 +172,36 @@ graph.update(newData, { renderer: "svg" });
 
 // Cleanup
 graph.destroy();
+```
+
+### TypeScript Usage
+
+Full TypeScript support with comprehensive type definitions:
+
+```typescript
+import { ForceGraph, GraphData, ForceGraphOptions } from "netviz";
+
+const data: GraphData = {
+  nodes: [
+    { id: "A", group: 1 },
+    { id: "B", group: 1 },
+    { id: "C", group: 2 }
+  ],
+  links: [
+    { source: "A", target: "B" },
+    { source: "B", target: "C" }
+  ]
+};
+
+const options: ForceGraphOptions = {
+  width: 800,
+  height: 600,
+  renderer: "svg",
+  nodeRadius: 5
+};
+
+const graph = ForceGraph(data, options);
+document.body.appendChild(graph);
 ```
 
 ## Development

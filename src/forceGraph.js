@@ -24,6 +24,50 @@ export function ForceGraph(
   { nodes, links = [] }, // an iterable of node and link objects
   _opts = {}
 ) {
+  // Validation: Check for required data
+  if (!nodes) {
+    throw new Error(
+      "netviz: Missing required 'nodes' array in data. " +
+        "Expected: ForceGraph({ nodes: [...], links: [...] }, options)"
+    );
+  }
+
+  if (!Array.isArray(nodes)) {
+    throw new Error(
+      `netviz: 'nodes' must be an array, received ${typeof nodes}. ` +
+        "Expected: ForceGraph({ nodes: [...], links: [...] }, options)"
+    );
+  }
+
+  if (nodes.length === 0) {
+    console.warn(
+      "netviz: Empty 'nodes' array provided. The graph will be empty."
+    );
+  }
+
+  if (!Array.isArray(links)) {
+    throw new Error(
+      `netviz: 'links' must be an array, received ${typeof links}. ` +
+        "Expected: ForceGraph({ nodes: [...], links: [...] }, options)"
+    );
+  }
+
+  // Validate that nodes have IDs
+  const nodeIdAccessor = _opts.nodeId || ((d) => d?.id);
+  const invalidNodes = nodes.filter((node, i) => {
+    const id = nodeIdAccessor(node);
+    return id === undefined || id === null;
+  });
+
+  if (invalidNodes.length > 0) {
+    throw new Error(
+      `netviz: ${invalidNodes.length} node(s) are missing an 'id' property. ` +
+        "All nodes must have an 'id' field. " +
+        "Example: { id: 'nodeA', ...otherProps }. " +
+        "Or provide a custom nodeId function in options."
+    );
+  }
+
   let opts = {
     ...getDefaultOpts(_opts),
     ..._opts,

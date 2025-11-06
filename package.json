@@ -6,6 +6,7 @@
   "main": "dist/netviz.js",
   "module": "dist/netviz.mjs",
   "unpkg": "dist/netviz.umd.js",
+  "types": "index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/netviz.mjs",
@@ -16,6 +17,7 @@
   "files": [
     "dist",
     "src",
+    "index.d.ts",
     "README.md",
     "LICENSE"
   ],
@@ -32,18 +34,27 @@
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
+    "network-visualization",
+    "graph-visualization",
     "d3",
-    "visualization",
-    "force-directed",
+    "d3js",
+    "force-directed-graph",
+    "node-link-diagram",
+    "network-analysis",
+    "data-visualization",
+    "dataviz",
     "graph",
     "network",
     "canvas",
     "svg",
-    "reactive",
-    "widget",
-    "observable",
     "edge-bundling",
-    "force-in-a-box"
+    "force-in-a-box",
+    "voronoi",
+    "smart-labels",
+    "reactive-widgets",
+    "observable",
+    "observable-framework",
+    "typescript"
   ],
   "author": {
     "name": "John Alexis Guerra Gómez",
