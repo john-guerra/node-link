@@ -20,7 +20,7 @@ export function renderCanvas(opts) {
       throw new Error("recreating canvas");
     }
     context = opts._this?.getContext("2d");
-  } catch (e) {
+  } catch (_e) {
     // Create new canvas
     const canvas = document.createElement("canvas");
     canvas.width = opts.width;
