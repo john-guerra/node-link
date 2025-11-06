@@ -45,7 +45,8 @@ export function filterNetwork(
     links = links
       .filter(
         ({ source, target }) =>
-          (!filterSource || ids.has(source)) && (!filterTarget || ids.has(target))
+          (!filterSource || ids.has(source)) &&
+          (!filterTarget || ids.has(target))
       )
       .map((l) => ({ ...l }));
 

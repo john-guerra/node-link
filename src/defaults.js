@@ -10,11 +10,7 @@ import * as d3 from "d3";
  * @returns {Object} Complete options object with defaults
  */
 export function getDefaultOpts(userOpts = {}) {
-  const {
-    width = 800,
-    height = 600,
-    invalidation = null,
-  } = userOpts;
+  const { width = 800, height = 600, invalidation = null } = userOpts;
 
   return {
     nodeId: (d) => d?.id, // given d in nodes, returns a unique identifier (string)
@@ -96,10 +92,10 @@ export function getDefaultOpts(userOpts = {}) {
     smartLabels: {
       stroke: "white", // label stroke color
       threshold: 2000, // Areas over this size would get labels
-      font: (d) => "8pt sans-serif",
+      font: (_d) => "8pt sans-serif",
       hover: true, // Show label of the hovered point
       onHover: (i) => i, // callback when hovered, will pass the index of the selected element
-      hoverFont: (d) => "bolder 8pt sans-serif",
+      hoverFont: (_d) => "bolder 8pt sans-serif",
       labelsInCentroids: false,
       backgroundFill: "#fefefe01", // What to paint the bg rect of the labels
       strokeWidth: 5,

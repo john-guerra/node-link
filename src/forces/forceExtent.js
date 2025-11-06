@@ -10,7 +10,11 @@
 export function forceExtent(extent) {
   let nodes;
 
-  if (extent === undefined) extent = [[0, 0], [960, 500]];
+  if (extent === undefined)
+    extent = [
+      [0, 0],
+      [960, 500],
+    ];
 
   function clamp(x, min, max) {
     return Math.max(min, Math.min(max, x));

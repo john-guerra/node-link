@@ -15,7 +15,11 @@ import * as d3 from "d3";
 export function forceTransport(extent, margin, strength) {
   let nodes;
 
-  if (extent === undefined) extent = [[0, 0], [960, 500]];
+  if (extent === undefined)
+    extent = [
+      [0, 0],
+      [960, 500],
+    ];
   if (margin === undefined) margin = 0;
   if (strength === undefined) strength = 1;
 

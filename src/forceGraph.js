@@ -54,7 +54,7 @@ export function ForceGraph(
 
   // Validate that nodes have IDs
   const nodeIdAccessor = _opts.nodeId || ((d) => d?.id);
-  const invalidNodes = nodes.filter((node, i) => {
+  const invalidNodes = nodes.filter((node) => {
     const id = nodeIdAccessor(node);
     return id === undefined || id === null;
   });
@@ -183,8 +183,8 @@ export function ForceGraph(
   const color = opts.color
     ? opts.color
     : opts.nodeGroup == null
-    ? null
-    : d3.scaleOrdinal(opts.nodeGroups, opts.colors);
+      ? null
+      : d3.scaleOrdinal(opts.nodeGroups, opts.colors);
 
   let simulation =
     opts._this?.simulation?.alpha(opts.simulationRestartAlpha)?.restart() ||
@@ -254,8 +254,8 @@ export function ForceGraph(
         opts.useForceInABox
           ? null
           : !opts.disjoint
-          ? d3.forceCenter(opts.width / 2, opts.height / 2)
-          : null
+            ? d3.forceCenter(opts.width / 2, opts.height / 2)
+            : null
       )
       .force("collide", forceCollide)
       .force("forceInABox", opts.useForceInABox ? groupingForce : null);
@@ -282,8 +282,8 @@ export function ForceGraph(
             .hardBoundary(true)
             .strength(opts.extentStrength)
         : opts.extentForce === "forceExtent"
-        ? forceExtent(opts.extent)
-        : forceTransport(opts.extent, 5, opts.extentStrength * 10)
+          ? forceExtent(opts.extent)
+          : forceTransport(opts.extent, 5, opts.extentStrength * 10)
     );
   }
 

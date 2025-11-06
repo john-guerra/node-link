@@ -152,7 +152,7 @@ export function renderSVG(opts) {
       .attr("cx", (d) => applyTransform(d, transform, opts).x)
       .attr("cy", (d) => applyTransform(d, transform, opts).y);
 
-    if (opts.useSmartLabels) {
+    if (opts.useSmartLabels && opts.T) {
       smartLabels(opts.nodes, {
         ...opts.smartLabels,
         target: nodeG,
@@ -162,7 +162,7 @@ export function renderSVG(opts) {
         width: opts.width,
         height: opts.height,
       });
-    } else {
+    } else if (label) {
       label
         .attr(
           "x",

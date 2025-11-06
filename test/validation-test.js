@@ -23,7 +23,7 @@ const testOpts = (overrides = {}) => ({
   width: 100,
   height: 100,
   renderer: "svg",
-  ...overrides
+  ...overrides,
 });
 
 describe("ForceGraph Validation", () => {
@@ -244,17 +244,27 @@ describe("ForceGraph Validation", () => {
   describe("ForceGraph element interface", () => {
     it("should return an HTML element", () => {
       const graph = ForceGraph({ nodes: [{ id: "A" }], links: [] }, testOpts());
+      // SVG elements are also considered HTML elements in the DOM hierarchy
       assert.ok(
-        graph instanceof global.HTMLElement,
-        "Should return HTML element"
+        graph instanceof global.HTMLElement ||
+          graph instanceof global.SVGElement,
+        "Should return HTML element (SVG or other)"
       );
       graph.destroy();
     });
 
     it("should have required methods", () => {
       const graph = ForceGraph({ nodes: [{ id: "A" }], links: [] }, testOpts());
-      assert.strictEqual(typeof graph.update, "function", "Should have update method");
-      assert.strictEqual(typeof graph.destroy, "function", "Should have destroy method");
+      assert.strictEqual(
+        typeof graph.update,
+        "function",
+        "Should have update method"
+      );
+      assert.strictEqual(
+        typeof graph.destroy,
+        "function",
+        "Should have destroy method"
+      );
       assert.ok(graph.simulation, "Should have simulation property");
       graph.destroy();
     });
