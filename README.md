@@ -1,6 +1,8 @@
 # netviz
 
-A force-directed graph visualization widget supporting SVG and Canvas rendering, with edge bundling, grouping layouts, and reactive widgets integration.
+A **network visualization library** providing multiple layout algorithms and rendering modes. Create interactive, publication-quality network visualizations with a simple, reactive API.
+
+Currently includes force-directed graphs with SVG and Canvas rendering, edge bundling, grouping layouts, and more visualization idioms coming soon.
 
 Based on the [Observable notebook](https://observablehq.com/@john-guerra/force-directed-graph) and following the [reactive widgets](https://reactivewidgets.org) pattern.
 
@@ -13,7 +15,7 @@ npm install netviz d3
 ## Quick Start
 
 ```javascript
-import { forceGraph } from "netviz";
+import { ForceGraph } from "netviz";
 
 const data = {
   nodes: [
@@ -27,7 +29,7 @@ const data = {
   ]
 };
 
-const graph = forceGraph(data, {
+const graph = ForceGraph(data, {
   width: 800,
   height: 600,
   renderer: "svg" // or "canvas"
@@ -36,8 +38,15 @@ const graph = forceGraph(data, {
 document.body.appendChild(graph);
 ```
 
-## Features
+**Alternative:** Use the `NodeLink` alias for semantic clarity:
+```javascript
+import { NodeLink } from "netviz";
+const graph = NodeLink(data, options);
+```
 
+## Visualization Idioms
+
+### Force-Directed Graphs (Node-Link Diagrams)
 - **Dual Rendering**: Both SVG and Canvas with same API
 - **Edge Bundling**: Optional force-based edge bundling
 - **Force-in-a-Box**: Grouping layout algorithm
@@ -46,6 +55,9 @@ document.body.appendChild(graph);
 - **AutoFit**: Automatic viewport fitting
 - **Reactive Widgets**: Compatible with Observable and reactive frameworks
 - **Observable Compatible**: Works seamlessly with Observable notebooks
+
+### Coming Soon
+Additional network visualization idioms will be added to this library
 
 ## Examples
 
@@ -73,9 +85,9 @@ The examples use local data from `examples/data/miserables.json` for faster load
 
 ## API
 
-### `forceGraph(data, options)`
+### `ForceGraph(data, options)` / `NodeLink(data, options)`
 
-Creates a force-directed graph visualization.
+Creates a force-directed graph visualization. `NodeLink` is an alias for semantic clarity.
 
 **Parameters:**
 - `data` - Object with `{nodes, links}`
@@ -130,7 +142,7 @@ See `src/defaults.js` for all 100+ available options.
 ```javascript
 // In an Observable notebook
 {
-  const graph = forceGraph(data, {
+  const graph = ForceGraph(data, {
     width,
     invalidation  // Auto-cleanup when cell re-runs
   });

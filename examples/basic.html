@@ -17,7 +17,7 @@
     .then((r) => r.json())
     .then((data) => {
       // Create force-directed graph
-      const graph = netviz.forceGraph(data, {
+      const graph = netviz.ForceGraph(data, {
         width: 960,
         height: 600,
         renderer: "canvas", // or "svg"

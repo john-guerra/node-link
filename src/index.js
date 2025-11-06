@@ -1,24 +1,25 @@
 /**
- * @john-guerra/node-link
+ * netviz - Network Visualization Library
  *
- * A force-directed graph visualization widget supporting SVG and Canvas rendering,
- * with edge bundling, grouping layouts, and reactive widgets integration.
+ * A collection of network visualization widgets supporting multiple rendering modes
+ * and layout algorithms. Currently includes force-directed graphs with SVG and Canvas
+ * rendering, edge bundling, grouping layouts, and reactive widgets integration.
  *
  * Based on: https://observablehq.com/@john-guerra/force-directed-graph
  * Follows reactive widgets pattern from: https://reactivewidgets.org
  */
 
-import { ForceGraph } from "./forceGraph.js";
+import { ForceGraph as ForceGraphCore } from "./forceGraph.js";
 
 /**
- * forceGraph - Main API function following reactive widgets pattern
+ * ForceGraph - Force-directed graph visualization widget
  *
  * @param {Object} data - {nodes, links} graph data
  * @param {Object} options - Configuration options
  * @returns {HTMLElement} DOM element with .value property, .update(), .destroy() methods
  *
  * @example
- * const graph = forceGraph(data, {
+ * const graph = ForceGraph(data, {
  *   width: 800,
  *   height: 600,
  *   renderer: "svg" // or "canvas"
@@ -32,11 +33,11 @@ import { ForceGraph } from "./forceGraph.js";
  * graph.destroy();
  *
  * // Observable compatibility
- * forceGraph(data, { invalidation, _this });
+ * ForceGraph(data, { invalidation, _this });
  */
-export function forceGraph(data, options = {}) {
+export function ForceGraph(data, options = {}) {
   // Create the graph using the core ForceGraph function
-  const element = ForceGraph(data, options);
+  const element = ForceGraphCore(data, options);
 
   // Add reactive widgets properties and methods
 
@@ -57,7 +58,7 @@ export function forceGraph(data, options = {}) {
     };
 
     // Re-create the graph with preserved state
-    const updated = ForceGraph(newData, mergedOptions);
+    const updated = ForceGraphCore(newData, mergedOptions);
 
     // Update the element's properties
     element.simulation = updated.simulation;
@@ -85,8 +86,14 @@ export function forceGraph(data, options = {}) {
   return element;
 }
 
+/**
+ * NodeLink - Alias for ForceGraph (node-link diagrams)
+ * Provides a semantic name for force-directed node-link visualizations
+ */
+export const NodeLink = ForceGraph;
+
 // Re-export utility functions for advanced usage
-export { ForceGraph } from "./forceGraph.js";
+export { ForceGraph as ForceGraphCore } from "./forceGraph.js";
 export { forceTransport } from "./forces/forceTransport.js";
 export { forceExtent } from "./forces/forceExtent.js";
 export { edgeBundling, ForceEdgeBundling } from "./forces/edgeBundling.js";

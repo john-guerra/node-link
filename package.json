@@ -1,7 +1,7 @@
 {
   "name": "netviz",
   "version": "0.1.0",
-  "description": "A force-directed graph visualization widget supporting SVG and Canvas rendering, with edge bundling, grouping layouts, and reactive widgets integration",
+  "description": "Network visualization library with multiple layout algorithms and rendering modes. Create interactive, publication-quality network visualizations with a simple, reactive API.",
   "type": "module",
   "main": "dist/netviz.js",
   "module": "dist/netviz.mjs",

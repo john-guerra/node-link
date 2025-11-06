@@ -27,7 +27,7 @@
 <!-- Demo 1: Invalidation -->
 <div class="demo">
   <h2>1. Invalidation Promise</h2>
-  <pre>const graph = forceGraph(data, { invalidation });</pre>
+  <pre>const graph = ForceGraph(data, { invalidation });</pre>
   <button id="create-inv">Create</button>
   <button id="trigger-inv">Trigger Invalidation</button>
   <div id="graph-inv"></div>
@@ -36,7 +36,7 @@
 <!-- Demo 2: State Preservation -->
 <div class="demo">
   <h2>2. State Preservation (_this)</h2>
-  <pre>const graph = forceGraph(data, { _this: previousGraph });</pre>
+  <pre>const graph = ForceGraph(data, { _this: previousGraph });</pre>
   <button id="create-this">Create</button>
   <button id="update-this">Update (preserves positions)</button>
   <div id="graph-this"></div>
@@ -73,7 +73,7 @@
         controller.signal.addEventListener("abort", resolve);
       });
 
-      graph1 = netviz.forceGraph(data, {
+      graph1 = netviz.ForceGraph(data, {
         width: 920,
         height: 300,
         invalidation,
@@ -90,7 +90,7 @@
     // Demo 2: State Preservation
     let graph2;
     document.getElementById("create-this").onclick = () => {
-      graph2 = netviz.forceGraph(data, {
+      graph2 = netviz.ForceGraph(data, {
         width: 920,
         height: 300,
         nodeRadius: 5,
@@ -104,7 +104,7 @@
       if (!graph2) return;
 
       // Update with _this to preserve positions
-      const newGraph = netviz.forceGraph(data, {
+      const newGraph = netviz.ForceGraph(data, {
         width: 920,
         height: 300,
         nodeRadius: 7, // Changed parameter
@@ -119,7 +119,7 @@
     // Demo 3: Update Method
     let graph3;
     document.getElementById("create-update").onclick = () => {
-      graph3 = netviz.forceGraph(data, {
+      graph3 = netviz.ForceGraph(data, {
         width: 920,
         height: 300,
       });

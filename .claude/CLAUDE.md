@@ -2,11 +2,15 @@
 
 ## Project Overview
 
-This is a Force Directed Reactive Widget exported from Observable (https://observablehq.com/@john-guerra/force-directed-graph@1859). It's a D3.js-based force-directed graph visualization library that supports both SVG and Canvas rendering.
+**netviz** is a network visualization library providing multiple layout algorithms and rendering modes for creating interactive, publication-quality network visualizations.
 
-**Current State:** Observable notebook compiled to JavaScript modules using the Observable Runtime.
+Originally migrated from Observable notebook (https://observablehq.com/@john-guerra/force-directed-graph@1859), the library currently includes force-directed graph layouts with plans to add additional network visualization idioms.
 
-**Migration Goal:** Extract this into a standalone NPM package `netviz` following the reactivewidgets.org pattern, similar to the navio.dev architecture (https://github.com/john-guerra/navio).
+**Architecture:** Standalone NPM package following the reactivewidgets.org pattern, similar to the navio.dev architecture (https://github.com/john-guerra/navio).
+
+**Main Exports:**
+- `ForceGraph` - Force-directed graph visualization widget
+- `NodeLink` - Alias for ForceGraph (semantic naming for node-link diagrams)
 
 ## Running the Project
 
@@ -135,7 +139,7 @@ The module exports `ForceGraph`, helper functions, and the chart example.
 **API Design (Reactive Widgets Pattern):**
 ```javascript
 // Returns HTML Element with .value property and input events
-const graph = forceGraph(data, options);
+const graph = ForceGraph(data, options);
 document.body.appendChild(graph);
 
 // Update with new data
@@ -145,7 +149,7 @@ graph.update(newData, newOptions);
 graph.destroy();
 
 // Observable compatibility - auto-handle these options:
-forceGraph(data, { invalidation, _this, ...options })
+ForceGraph(data, { invalidation, _this, ...options })
 ```
 
 **Build System:**
@@ -184,7 +188,7 @@ Use a **dual testing strategy**:
 **Test Organization:**
 ```
 test/
-├── forceGraph-test.js      # Core API tests
+├── ForceGraph-test.js      # Core API tests
 ├── renderers-test.js       # Canvas/SVG renderer tests
 ├── forces-test.js          # Custom forces tests
 ├── utils-test.js           # Helper utilities tests
@@ -213,8 +217,8 @@ npm run test:format   # Check Prettier formatting
 ```
 netviz/
 ├── src/
-│   ├── index.js              # Main entry, exports forceGraph
-│   ├── forceGraph.js         # Core function
+│   ├── index.js              # Main entry, exports ForceGraph
+│   ├── ForceGraph.js         # Core function
 │   ├── renderers/
 │   │   ├── renderCanvas.js   # Canvas renderer
 │   │   └── renderSVG.js      # SVG renderer
@@ -230,7 +234,7 @@ netviz/
 │   │   └── filterNetwork.js
 │   └── defaults.js           # Default options
 ├── test/
-│   ├── forceGraph-test.js
+│   ├── ForceGraph-test.js
 │   └── plots/
 │       └── basic-graph.js
 ├── examples/

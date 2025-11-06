@@ -121,7 +121,7 @@ This is the detailed task breakdown for migrating the Observable notebook to a s
 
 ### 2.6 Extract Core ForceGraph Function
 - [ ] Extract `ForceGraph` function (lines 230-488)
-  - [ ] Copy to `src/forceGraph.js`
+  - [ ] Copy to `src/ForceGraph.js`
   - [ ] Import all dependencies
   - [ ] Remove Observable-specific code
   - [ ] Keep state preservation logic (_this)
@@ -134,7 +134,7 @@ This is the detailed task breakdown for migrating the Observable notebook to a s
 
 ### 3.1 Create Wrapper Function
 - [ ] Create `src/index.js` as main entry point
-- [ ] Implement `forceGraph(data, options)` wrapper:
+- [ ] Implement `ForceGraph(data, options)` wrapper:
   - [ ] Extract `{nodes, links}` from data parameter
   - [ ] Call internal ForceGraph function
   - [ ] Return wrapped HTML Element
@@ -192,7 +192,7 @@ This is the detailed task breakdown for migrating the Observable notebook to a s
 - [ ] `test/defaults-test.js`:
   - [ ] Test default options merging
   - [ ] Test option validation
-- [ ] `test/forceGraph-test.js`:
+- [ ] `test/ForceGraph-test.js`:
   - [ ] Test basic initialization
   - [ ] Test with minimal data
   - [ ] Test `.update()` method
