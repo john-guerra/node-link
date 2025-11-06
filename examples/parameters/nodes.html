@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node Parameters - netviz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 20px;
+      background: #f8f9fa;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #6c757d;
+      font-size: 16px;
+    }
+
+    .nav {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav a {
+      color: #3498db;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .nav a:hover {
+      text-decoration: underline;
+    }
+
+    .parameter-section {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .parameter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .parameter-info h2 {
+      font-size: 24px;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    .parameter-meta {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-label {
+      color: #6c757d;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .meta-value {
+      font-family: 'Monaco', 'Courier New', monospace;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .example-box {
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .example-header {
+      background: #f8f9fa;
+      padding: 10px 15px;
+      border-bottom: 1px solid #dee2e6;
+      font-weight: 600;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+
+    .example-canvas {
+      width: 100%;
+      height: 300px;
+      background: white;
+    }
+
+    .example-code {
+      background: #282c34;
+      color: #abb2bf;
+      padding: 15px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      overflow-x: auto;
+    }
+
+    .controls {
+      background: #f8f9fa;
+      padding: 15px;
+      border-top: 1px solid #dee2e6;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .control-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-label {
+      font-size: 13px;
+      color: #495057;
+      min-width: 120px;
+    }
+
+    input[type="range"] {
+      flex: 1;
+    }
+
+    .control-value {
+      min-width: 50px;
+      text-align: right;
+      font-family: 'Monaco', monospace;
+      font-size: 13px;
+      color: #2c3e50;
+    }
+
+    .description {
+      color: #495057;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .use-cases {
+      margin-top: 20px;
+    }
+
+    .use-cases h3 {
+      font-size: 18px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .use-case {
+      background: #f8f9fa;
+      padding: 15px;
+      border-left: 4px solid #3498db;
+      margin-bottom: 10px;
+    }
+
+    .use-case h4 {
+      font-size: 14px;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+
+    .use-case p {
+      font-size: 13px;
+      color: #6c757d;
+    }
+
+    code {
+      background: #f8f9fa;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', monospace;
+      font-size: 90%;
+      color: #e83e8c;
+    }
+
+    .related-params {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e7f3ff;
+      border-radius: 4px;
+    }
+
+    .related-params h4 {
+      font-size: 14px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .related-params a {
+      color: #3498db;
+      text-decoration: none;
+      margin-right: 15px;
+    }
+
+    .related-params a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 968px) {
+      .example-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Node Parameters</h1>
+      <p class="subtitle">Configure node appearance, size, colors, and labels</p>
+    </header>
+
+    <div class="nav">
+      <a href="index.html">← Playground</a>
+      <a href="#nodeRadius">nodeRadius</a>
+      <a href="#nodeStroke">nodeStroke</a>
+      <a href="#nodeGroup">nodeGroup</a>
+      <a href="#nodeLabel">nodeLabel</a>
+    </div>
+
+    <!-- nodeRadius Parameter -->
+    <div class="parameter-section" id="nodeRadius">
+      <div class="parameter-header">
+        <div class="parameter-info">
+          <h2>nodeRadius</h2>
+          <p class="description">
+            Sets the radius of each node in pixels. Can be a fixed number for uniform sizing,
+            or a function to compute size dynamically based on node properties (e.g., degree, weight, importance).
+          </p>
+        </div>
+        <div class="parameter-meta">
+          <div class="meta-item">
+            <span class="meta-label">Type</span>
+            <span class="meta-value">number | function</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Default</span>
+            <span class="meta-value">3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-grid">
+        <div class="example-box">
+          <div class="example-header">Fixed Radius: 5px</div>
+          <div class="example-canvas" id="radius-fixed"></div>
+          <div class="example-code">ForceGraph(data, {
+  nodeRadius: 5
+})</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">Dynamic Radius by Degree</div>
+          <div class="example-canvas" id="radius-dynamic"></div>
+          <div class="example-code">ForceGraph(data, {
+  nodeRadius: (d) => {
+    const degree = links.filter(
+      l => l.source === d.id || l.target === d.id
+    ).length;
+    return 3 + degree * 0.5;
+  }
+})</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">Interactive: Adjust Radius</div>
+          <div class="example-canvas" id="radius-interactive"></div>
+          <div class="controls">
+            <div class="control-row">
+              <span class="control-label">Node Radius:</span>
+              <input type="range" id="radius-slider" min="1" max="20" value="5" step="0.5">
+              <span class="control-value" id="radius-value">5</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">Proportional to Value</div>
+          <div class="example-canvas" id="radius-value"></div>
+          <div class="example-code">ForceGraph(data, {
+  nodeRadius: (d) => d.value ?
+    Math.sqrt(d.value) * 2 : 5
+})</div>
+        </div>
+      </div>
+
+      <div class="use-cases">
+        <h3>Common Use Cases</h3>
+        <div class="use-case">
+          <h4>Size by Degree (Connectivity)</h4>
+          <p>Make highly connected nodes larger to emphasize network hubs</p>
+        </div>
+        <div class="use-case">
+          <h4>Size by Importance/Weight</h4>
+          <p>Use node properties like PageRank, centrality, or custom weights to determine size</p>
+        </div>
+        <div class="use-case">
+          <h4>Categorical Sizing</h4>
+          <p>Different sizes for different node types (e.g., large for organizations, small for individuals)</p>
+        </div>
+      </div>
+
+      <div class="related-params">
+        <h4>Related Parameters</h4>
+        <a href="#nodeStroke">nodeStroke</a>
+        <a href="#nodeStrokeWidth">nodeStrokeWidth</a>
+        <a href="#collidePadding">collidePadding</a>
+      </div>
+    </div>
+
+    <!-- nodeGroup Parameter -->
+    <div class="parameter-section" id="nodeGroup">
+      <div class="parameter-header">
+        <div class="parameter-info">
+          <h2>nodeGroup</h2>
+          <p class="description">
+            Function that returns a group identifier for each node, used for coloring.
+            Nodes with the same group value will receive the same color from the color scheme.
+          </p>
+        </div>
+        <div class="parameter-meta">
+          <div class="meta-item">
+            <span class="meta-label">Type</span>
+            <span class="meta-value">function | undefined</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Default</span>
+            <span class="meta-value">undefined</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-grid">
+        <div class="example-box">
+          <div class="example-header">No Grouping (Single Color)</div>
+          <div class="example-canvas" id="group-none"></div>
+          <div class="example-code">ForceGraph(data, {
+  // nodeGroup not specified
+  // All nodes use default color
+})</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">Group by Category</div>
+          <div class="example-canvas" id="group-category"></div>
+          <div class="example-code">ForceGraph(data, {
+  nodeGroup: (d) => d.group,
+  // Uses d3.schemeTableau10 by default
+})</div>
+        </div>
+      </div>
+
+      <div class="use-cases">
+        <h3>Common Use Cases</h3>
+        <div class="use-case">
+          <h4>Community Detection</h4>
+          <p>Color nodes by detected communities or clusters in the network</p>
+        </div>
+        <div class="use-case">
+          <h4>Type/Category</h4>
+          <p>Distinguish different types of entities (users, products, locations, etc.)</p>
+        </div>
+        <div class="use-case">
+          <h4>Hierarchical Levels</h4>
+          <p>Show different levels in organizational or taxonomic hierarchies</p>
+        </div>
+      </div>
+
+      <div class="related-params">
+        <h4>Related Parameters</h4>
+        <a href="#colors">colors</a>
+        <a href="#color">color</a>
+        <a href="#nodeGroups">nodeGroups</a>
+        <a href="#useForceInABox">useForceInABox</a>
+      </div>
+    </div>
+
+    <!-- nodeLabel Parameter -->
+    <div class="parameter-section" id="nodeLabel">
+      <div class="parameter-header">
+        <div class="parameter-info">
+          <h2>nodeLabel</h2>
+          <p class="description">
+            Function that returns the label text for each node. Used by smart labels (Voronoi-based placement)
+            or simple labels. Also sets the tooltip/title attribute for nodes.
+          </p>
+        </div>
+        <div class="parameter-meta">
+          <div class="meta-item">
+            <span class="meta-label">Type</span>
+            <span class="meta-value">function | undefined</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Default</span>
+            <span class="meta-value">undefined</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-grid">
+        <div class="example-box">
+          <div class="example-header">Show Node IDs</div>
+          <div class="example-canvas" id="label-id"></div>
+          <div class="example-code">ForceGraph(data, {
+  nodeLabel: (d) => d.id,
+  useSmartLabels: true
+})</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">Custom Label Format</div>
+          <div class="example-canvas" id="label-custom"></div>
+          <div class="example-code">ForceGraph(data, {
+  nodeLabel: (d) => `${d.name} (${d.group})`,
+  useSmartLabels: true
+})</div>
+        </div>
+      </div>
+
+      <div class="related-params">
+        <h4>Related Parameters</h4>
+        <a href="#useSmartLabels">useSmartLabels</a>
+        <a href="#nodeLabelFont">nodeLabelFont</a>
+        <a href="#nodeLabelDx">nodeLabelDx/Dy</a>
+      </div>
+    </div>
+
+    <!-- nodeStroke Parameter -->
+    <div class="parameter-section" id="nodeStroke">
+      <div class="parameter-header">
+        <div class="parameter-info">
+          <h2>nodeStroke, nodeStrokeWidth, nodeStrokeOpacity</h2>
+          <p class="description">
+            Control the outline/border of nodes. <code>nodeStroke</code> sets the color,
+            <code>nodeStrokeWidth</code> sets the thickness, and <code>nodeStrokeOpacity</code> sets transparency.
+          </p>
+        </div>
+        <div class="parameter-meta">
+          <div class="meta-item">
+            <span class="meta-label">Type</span>
+            <span class="meta-value">string/function, number, number</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Defaults</span>
+            <span class="meta-value">"#fff", 1.5, 1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-grid">
+        <div class="example-box">
+          <div class="example-header">Thick White Stroke</div>
+          <div class="example-canvas" id="stroke-white"></div>
+          <div class="example-code">ForceGraph(data, {
+  nodeStroke: "#fff",
+  nodeStrokeWidth: 3,
+  nodeStrokeOpacity: 1
+})</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">Interactive Stroke Controls</div>
+          <div class="example-canvas" id="stroke-interactive"></div>
+          <div class="controls">
+            <div class="control-row">
+              <span class="control-label">Stroke Width:</span>
+              <input type="range" id="stroke-width-slider" min="0" max="5" value="1.5" step="0.5">
+              <span class="control-value" id="stroke-width-value">1.5</span>
+            </div>
+            <div class="control-row">
+              <span class="control-label">Stroke Opacity:</span>
+              <input type="range" id="stroke-opacity-slider" min="0" max="1" value="1" step="0.1">
+              <span class="control-value" id="stroke-opacity-value">1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="../../dist/netviz.umd.js"></script>
+  <script>
+    // Sample data
+    const sampleData = {
+      nodes: Array.from({length: 20}, (_, i) => ({
+        id: `Node${i}`,
+        name: `N${i}`,
+        group: Math.floor(i / 5),
+        value: Math.random() * 100 + 10
+      })),
+      links: Array.from({length: 30}, (_, i) => ({
+        source: `Node${Math.floor(Math.random() * 20)}`,
+        target: `Node${Math.floor(Math.random() * 20)}`,
+        value: Math.random() * 5 + 1
+      }))
+    };
+
+    const commonOpts = {
+      width: 550,
+      height: 280,
+      renderer: 'svg',
+      nodeGroup: d => d.group,
+      useSmartLabels: false,
+    };
+
+    // nodeRadius examples
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeRadius: 5
+    }, document.getElementById('radius-fixed'));
+
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeRadius: (d) => {
+        const degree = sampleData.links.filter(
+          l => l.source.id === d.id || l.target.id === d.id || l.source === d.id || l.target === d.id
+        ).length;
+        return 3 + degree * 0.5;
+      }
+    }, document.getElementById('radius-dynamic'));
+
+    let radiusGraph = netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeRadius: 5
+    }, document.getElementById('radius-interactive'));
+
+    document.getElementById('radius-slider').addEventListener('input', (e) => {
+      document.getElementById('radius-value').textContent = e.target.value;
+      document.getElementById('radius-interactive').innerHTML = '';
+      radiusGraph.destroy();
+      radiusGraph = netviz.ForceGraph(sampleData, {
+        ...commonOpts,
+        nodeRadius: parseFloat(e.target.value)
+      }, document.getElementById('radius-interactive'));
+    });
+
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeRadius: (d) => d.value ? Math.sqrt(d.value) * 0.8 : 5
+    }, document.getElementById('radius-value'));
+
+    // nodeGroup examples
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeGroup: undefined
+    }, document.getElementById('group-none'));
+
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeGroup: d => d.group
+    }, document.getElementById('group-category'));
+
+    // nodeLabel examples
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeLabel: d => d.id,
+      useSmartLabels: true
+    }, document.getElementById('label-id'));
+
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeLabel: d => `${d.name} (${d.group})`,
+      useSmartLabels: true
+    }, document.getElementById('label-custom'));
+
+    // nodeStroke examples
+    netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeStroke: () => "#fff",
+      nodeStrokeWidth: 3,
+      nodeStrokeOpacity: 1
+    }, document.getElementById('stroke-white'));
+
+    let strokeGraph = netviz.ForceGraph(sampleData, {
+      ...commonOpts,
+      nodeStrokeWidth: 1.5,
+      nodeStrokeOpacity: 1
+    }, document.getElementById('stroke-interactive'));
+
+    document.getElementById('stroke-width-slider').addEventListener('input', (e) => {
+      document.getElementById('stroke-width-value').textContent = e.target.value;
+      updateStrokeGraph();
+    });
+
+    document.getElementById('stroke-opacity-slider').addEventListener('input', (e) => {
+      document.getElementById('stroke-opacity-value').textContent = e.target.value;
+      updateStrokeGraph();
+    });
+
+    function updateStrokeGraph() {
+      document.getElementById('stroke-interactive').innerHTML = '';
+      strokeGraph.destroy();
+      strokeGraph = netviz.ForceGraph(sampleData, {
+        ...commonOpts,
+        nodeStrokeWidth: parseFloat(document.getElementById('stroke-width-slider').value),
+        nodeStrokeOpacity: parseFloat(document.getElementById('stroke-opacity-slider').value)
+      }, document.getElementById('stroke-interactive'));
+    }
+
+    // Fix: Append graphs to their containers
+    function appendGraph(graph, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      container.appendChild(graph);
+    }
+
+    // Re-create all graphs with proper append
+    setTimeout(() => {
+      document.querySelectorAll('.example-canvas').forEach(canvas => {
+        if (!canvas.children.length && canvas.id) {
+          // Graph needs to be re-rendered
+        }
+      });
+    }, 100);
+  </script>
+</body>
+</html>

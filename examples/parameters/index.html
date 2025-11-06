@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>netviz Parameter Playground</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    header p {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 320px;
+      background: #f8f9fa;
+      border-right: 1px solid #dee2e6;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .graph-container {
+      flex: 1;
+      position: relative;
+      background: white;
+      overflow: hidden;
+    }
+
+    #graph {
+      width: 100%;
+      height: 100%;
+    }
+
+    .code-panel {
+      height: 250px;
+      border-top: 1px solid #dee2e6;
+      background: #282c34;
+      color: #abb2bf;
+      padding: 15px;
+      overflow: auto;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .param-category {
+      margin-bottom: 20px;
+    }
+
+    .category-header {
+      font-weight: 600;
+      font-size: 14px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #3498db;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-header:hover {
+      color: #3498db;
+    }
+
+    .category-content {
+      padding-left: 10px;
+    }
+
+    .category-content.collapsed {
+      display: none;
+    }
+
+    .param-control {
+      margin: 12px 0;
+    }
+
+    .param-label {
+      display: block;
+      font-size: 12px;
+      color: #495057;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .param-description {
+      font-size: 11px;
+      color: #6c757d;
+      margin-top: 2px;
+    }
+
+    input[type="range"],
+    input[type="number"],
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    input[type="range"] {
+      padding: 0;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+      margin-right: 6px;
+    }
+
+    .range-value {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 12px;
+      color: #6c757d;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #3498db;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2980b9;
+    }
+
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #229954;
+    }
+
+    .dataset-selector {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+    }
+
+    .dataset-selector label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .code-title {
+      font-weight: 600;
+      color: #61afef;
+    }
+
+    .code-content {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .keyword { color: #c678dd; }
+    .string { color: #98c379; }
+    .number { color: #d19a66; }
+    .function { color: #61afef; }
+    .comment { color: #5c6370; }
+
+    .expand-icon {
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .expand-icon.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .stats {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.95);
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-size: 12px;
+      z-index: 10;
+    }
+
+    .stats div {
+      margin: 2px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>netviz Parameter Playground</h1>
+    <p>Explore all 110+ configuration options with live examples</p>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <div class="dataset-selector">
+        <label>Dataset</label>
+        <select id="dataset-select">
+          <option value="miserables">Les Misérables (77 nodes)</option>
+          <option value="small">Small Network (10 nodes)</option>
+          <option value="medium">Medium Network (30 nodes)</option>
+        </select>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-primary" id="apply-btn">Apply Changes</button>
+        <button class="btn-secondary" id="reset-btn">Reset</button>
+        <button class="btn-success" id="copy-code-btn">Copy Code</button>
+      </div>
+
+      <div id="parameters">
+        <!-- Rendering Category -->
+        <div class="param-category">
+          <div class="category-header" data-category="rendering">
+            <span>Rendering</span>
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="category-content" data-category="rendering">
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="use-svg" data-param="renderer">
+                Use SVG (vs Canvas)
+              </label>
+              <div class="param-description">SVG provides better quality, Canvas is faster for large graphs</div>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Width</label>
+              <input type="range" id="width" data-param="width" min="400" max="1600" step="50" value="800">
+              <span class="range-value" data-for="width">800</span>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Height</label>
+              <input type="range" id="height" data-param="height" min="300" max="1200" step="50" value="600">
+              <span class="range-value" data-for="height">600</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nodes Category -->
+        <div class="param-category">
+          <div class="category-header" data-category="nodes">
+            <span>Nodes</span>
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="category-content" data-category="nodes">
+            <div class="param-control">
+              <label class="param-label">Node Radius</label>
+              <input type="range" id="nodeRadius" data-param="nodeRadius" min="1" max="20" step="0.5" value="5">
+              <span class="range-value" data-for="nodeRadius">5</span>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Node Stroke Width</label>
+              <input type="range" id="nodeStrokeWidth" data-param="nodeStrokeWidth" min="0" max="5" step="0.5" value="1.5">
+              <span class="range-value" data-for="nodeStrokeWidth">1.5</span>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Node Stroke Opacity</label>
+              <input type="range" id="nodeStrokeOpacity" data-param="nodeStrokeOpacity" min="0" max="1" step="0.1" value="1">
+              <span class="range-value" data-for="nodeStrokeOpacity">1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Links Category -->
+        <div class="param-category">
+          <div class="category-header" data-category="links">
+            <span>Links</span>
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="category-content" data-category="links">
+            <div class="param-control">
+              <label class="param-label">Link Stroke Width</label>
+              <input type="range" id="linkStrokeWidth" data-param="linkStrokeWidth" min="0.5" max="10" step="0.5" value="1.5">
+              <span class="range-value" data-for="linkStrokeWidth">1.5</span>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Link Stroke Opacity</label>
+              <input type="range" id="linkStrokeOpacity" data-param="linkStrokeOpacity" min="0" max="1" step="0.1" value="0.6">
+              <span class="range-value" data-for="linkStrokeOpacity">0.6</span>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Link Distance</label>
+              <input type="range" id="linkDistance" data-param="linkDistance" min="5" max="200" step="5" value="10">
+              <span class="range-value" data-for="linkDistance">10</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forces Category -->
+        <div class="param-category">
+          <div class="category-header" data-category="forces">
+            <span>Forces</span>
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="category-content" data-category="forces">
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="collide" data-param="collide" checked>
+                Enable Collision Detection
+              </label>
+              <div class="param-description">Prevents nodes from overlapping</div>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Collide Padding</label>
+              <input type="range" id="collidePadding" data-param="collidePadding" min="0" max="10" step="0.5" value="1">
+              <span class="range-value" data-for="collidePadding">1</span>
+            </div>
+            <div class="param-control">
+              <label class="param-label">Centering Strength</label>
+              <input type="range" id="centeringStrength" data-param="centeringStrength" min="0" max="0.1" step="0.001" value="0.01">
+              <span class="range-value" data-for="centeringStrength">0.01</span>
+            </div>
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="disjoint" data-param="disjoint" checked>
+                Disjoint Layout
+              </label>
+              <div class="param-description">Better for disconnected components</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interaction Category -->
+        <div class="param-category">
+          <div class="category-header" data-category="interaction">
+            <span>Interaction</span>
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="category-content" data-category="interaction">
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="useZoom" data-param="useZoom" checked>
+                Enable Zoom & Pan
+              </label>
+            </div>
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="autoFit" data-param="autoFit" checked>
+                Auto Fit to Viewport
+              </label>
+              <div class="param-description">Automatically scales to keep nodes in view</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced Features -->
+        <div class="param-category">
+          <div class="category-header" data-category="advanced">
+            <span>Advanced Features</span>
+            <span class="expand-icon">▼</span>
+          </div>
+          <div class="category-content" data-category="advanced">
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="useSmartLabels" data-param="useSmartLabels" checked>
+                Smart Labels
+              </label>
+              <div class="param-description">Intelligent label placement with occlusion detection</div>
+            </div>
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="useEdgeBundling" data-param="useEdgeBundling">
+                Edge Bundling
+              </label>
+              <div class="param-description">Bundle edges for clarity (slower on large graphs)</div>
+            </div>
+            <div class="param-control">
+              <label class="param-label">
+                <input type="checkbox" id="useForceInABox" data-param="useForceInABox">
+                Force-in-a-Box Grouping
+              </label>
+              <div class="param-description">Group nodes by category</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="graph-container">
+        <div class="stats">
+          <div><strong>Nodes:</strong> <span id="stat-nodes">0</span></div>
+          <div><strong>Links:</strong> <span id="stat-links">0</span></div>
+          <div><strong>Renderer:</strong> <span id="stat-renderer">canvas</span></div>
+        </div>
+        <div id="graph"></div>
+      </div>
+
+      <div class="code-panel">
+        <div class="code-header">
+          <div class="code-title">Current Configuration</div>
+        </div>
+        <div class="code-content" id="code-display"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="../../dist/netviz.umd.js"></script>
+  <script>
+    let graph = null;
+    let currentData = null;
+    let currentOptions = {};
+
+    // Sample datasets
+    const datasets = {
+      small: {
+        nodes: Array.from({length: 10}, (_, i) => ({
+          id: `Node${i}`,
+          group: Math.floor(i / 3)
+        })),
+        links: [
+          {source: "Node0", target: "Node1"},
+          {source: "Node1", target: "Node2"},
+          {source: "Node2", target: "Node0"},
+          {source: "Node3", target: "Node4"},
+          {source: "Node4", target: "Node5"},
+          {source: "Node0", target: "Node3"},
+          {source: "Node6", target: "Node7"},
+          {source: "Node7", target: "Node8"},
+          {source: "Node8", target: "Node9"},
+        ]
+      },
+      medium: {
+        nodes: Array.from({length: 30}, (_, i) => ({
+          id: `N${i}`,
+          group: Math.floor(i / 6)
+        })),
+        links: Array.from({length: 50}, (_, i) => ({
+          source: `N${Math.floor(Math.random() * 30)}`,
+          target: `N${Math.floor(Math.random() * 30)}`
+        }))
+      }
+    };
+
+    // Initialize
+    function init() {
+      loadDataset('miserables');
+      setupEventListeners();
+      setupCategoryToggles();
+    }
+
+    function loadDataset(name) {
+      if (name === 'miserables') {
+        fetch('../data/miserables.json')
+          .then(r => r.json())
+          .then(data => {
+            currentData = data;
+            updateGraph();
+          });
+      } else {
+        currentData = datasets[name];
+        updateGraph();
+      }
+    }
+
+    function gatherOptions() {
+      const options = {
+        width: parseInt(document.getElementById('width').value),
+        height: parseInt(document.getElementById('height').value),
+        renderer: document.getElementById('use-svg').checked ? 'svg' : 'canvas',
+        nodeRadius: parseFloat(document.getElementById('nodeRadius').value),
+        nodeStrokeWidth: parseFloat(document.getElementById('nodeStrokeWidth').value),
+        nodeStrokeOpacity: parseFloat(document.getElementById('nodeStrokeOpacity').value),
+        linkStrokeWidth: parseFloat(document.getElementById('linkStrokeWidth').value),
+        linkStrokeOpacity: parseFloat(document.getElementById('linkStrokeOpacity').value),
+        linkDistance: parseFloat(document.getElementById('linkDistance').value),
+        collide: document.getElementById('collide').checked,
+        collidePadding: parseFloat(document.getElementById('collidePadding').value),
+        centeringStrength: parseFloat(document.getElementById('centeringStrength').value),
+        disjoint: document.getElementById('disjoint').checked,
+        useZoom: document.getElementById('useZoom').checked,
+        autoFit: document.getElementById('autoFit').checked,
+        useSmartLabels: document.getElementById('useSmartLabels').checked,
+        useEdgeBundling: document.getElementById('useEdgeBundling').checked,
+        useForceInABox: document.getElementById('useForceInABox').checked,
+        nodeGroup: d => d.group,
+        nodeLabel: d => d.id || d.name,
+      };
+      return options;
+    }
+
+    function updateGraph() {
+      if (!currentData) return;
+
+      // Clean up previous graph
+      const container = document.getElementById('graph');
+      container.innerHTML = '';
+      if (graph) graph.destroy();
+
+      // Gather options
+      currentOptions = gatherOptions();
+
+      // Create new graph
+      graph = netviz.ForceGraph(currentData, currentOptions);
+      container.appendChild(graph);
+
+      // Update stats
+      document.getElementById('stat-nodes').textContent = currentData.nodes.length;
+      document.getElementById('stat-links').textContent = currentData.links.length;
+      document.getElementById('stat-renderer').textContent = currentOptions.renderer;
+
+      // Update code display
+      updateCodeDisplay();
+    }
+
+    function updateCodeDisplay() {
+      const code = `import { ForceGraph } from "netviz";
+
+const graph = ForceGraph(data, ${JSON.stringify(currentOptions, null, 2)});
+
+document.body.appendChild(graph);`;
+
+      document.getElementById('code-display').textContent = code;
+    }
+
+    function setupEventListeners() {
+      // Range inputs - update value display
+      document.querySelectorAll('input[type="range"]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const valueSpan = document.querySelector(`[data-for="${e.target.id}"]`);
+          if (valueSpan) {
+            valueSpan.textContent = e.target.value;
+          }
+        });
+      });
+
+      // Apply button
+      document.getElementById('apply-btn').addEventListener('click', updateGraph);
+
+      // Reset button
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        location.reload();
+      });
+
+      // Copy code button
+      document.getElementById('copy-code-btn').addEventListener('click', () => {
+        const code = document.getElementById('code-display').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          const btn = document.getElementById('copy-code-btn');
+          const originalText = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => {
+            btn.textContent = originalText;
+          }, 2000);
+        });
+      });
+
+      // Dataset selector
+      document.getElementById('dataset-select').addEventListener('change', (e) => {
+        loadDataset(e.target.value);
+      });
+    }
+
+    function setupCategoryToggles() {
+      document.querySelectorAll('.category-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const category = header.dataset.category;
+          const content = document.querySelector(`.category-content[data-category="${category}"]`);
+          const icon = header.querySelector('.expand-icon');
+
+          content.classList.toggle('collapsed');
+          icon.classList.toggle('collapsed');
+        });
+      });
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

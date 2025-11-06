@@ -86,6 +86,34 @@ npx http-server
 
 The examples use local data from `examples/data/miserables.json` for faster loading and offline use.
 
+## Documentation
+
+### 🎮 Interactive Parameter Playground
+
+**[Launch Playground →](examples/parameters/index.html)**
+
+Explore all 110+ configuration parameters with live previews, interactive controls, and copy-paste ready code.
+
+### 📖 Complete API Reference
+
+**[API Reference →](docs/API_REFERENCE.md)**
+
+Comprehensive documentation of all parameters organized by category:
+- Rendering (Canvas/SVG, size, performance)
+- Nodes (styling, sizing, labels)
+- Links (appearance, forces)
+- Forces & Simulation (physics parameters)
+- Interaction (zoom, pan, drag)
+- Edge Bundling (visual clarity)
+- Force-in-a-Box (spatial grouping)
+- Smart Labels (intelligent placement)
+- And more...
+
+### 📚 Detailed Parameter Guides
+
+- **[Node Parameters](examples/parameters/nodes.html)** - Complete guide with interactive examples
+- **[All Parameters](examples/parameters/)** - Category-specific documentation
+
 ## API
 
 ### `ForceGraph(data, options)` / `NodeLink(data, options)`
@@ -149,7 +177,7 @@ Creates a force-directed graph visualization. `NodeLink` is an alias for semanti
 }
 ```
 
-See `src/defaults.js` for all 100+ available options.
+**[See complete parameter reference →](docs/API_REFERENCE.md)** for all 110+ available options with examples.
 
 ### Observable Usage
 
